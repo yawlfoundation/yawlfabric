@@ -1,0 +1,92 @@
+<project name="YAWL FabricService" default="buildService" basedir="./..">
+
+    <!-- =========INITIAL PROPERTIES, FILTERS, PATHS & FILESETS============ -->
+
+    <!--
+        Load properties from properties file and set up filters
+    -->
+
+    <property name="app.version" value="0.1"/>
+    <property name="developer.name" value="Michael Adams"/>
+
+
+    <!--
+        Source and resource directories
+    -->
+    <property name="build.dir" value="build"/>
+    <property name="temp.dir" value="temp"/>
+    <property name="classes.dir" value="classes"/>
+    <property name="output.dir" value="output"/>
+    <property name="src.dir" value="src"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="packageRoot" value="/org/yawlfoundation/yawl"/>
+    <property name="webinf.dir" value="/WEB-INF/classes${packageRoot}"/>
+
+    
+    <property name="service.app.name" value="fabricService"/>
+
+
+    <path id="build.classpath">
+      <fileset dir="lib">
+        <include name="**/*.jar"/>
+      </fileset>
+    </path>
+
+
+    <!-- =================MAIN BUILD TARGETS================= -->
+
+    <!--
+        Clean the build environment
+    -->
+
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+        <delete dir="${output.dir}"/>
+        <delete dir="${temp.dir}/${service.app.name}"/>
+    </target>
+
+    <!--
+        Initialise build environment
+    -->
+
+    <target name="init" depends="clean">
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${output.dir}"/>
+        <mkdir dir="${temp.dir}/${service.app.name}"/>
+    </target>
+
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" debug="true" destdir="${classes.dir}"
+               deprecation="true" verbose="true" includeantruntime="true"
+               encoding="UTF-8">
+            <classpath refid="build.classpath"/>
+        </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${src.dir}" includes="**/*.xml"/>
+        </copy>
+    </target>
+
+
+    <target name="buildService" depends="compile">
+
+        <copy todir="${temp.dir}/${service.app.name}${webinf.dir}/fabric">
+            <fileset dir="${classes.dir}${packageRoot}/fabric"/>
+        </copy>
+        <copy todir="${temp.dir}/${service.app.name}/WEB-INF">
+            <fileset file="${build.dir}/fabric/web.xml"/>
+        </copy>
+        <copy todir="${temp.dir}/${service.app.name}/WEB-INF/classes"
+              file="${build.dir}/log4j2.xml"/>
+        <copy todir="${temp.dir}/${service.app.name}/WEB-INF/lib">
+            <fileset dir="${lib.dir}" excludes="servlet-api.jar"/>
+        </copy>
+
+        <jar destfile="${output.dir}/${service.app.name}.war">
+            <fileset dir="${temp.dir}/${service.app.name}"/>
+        </jar>
+
+        <delete dir="${temp.dir}/${service.app.name}" deleteonexit="true"/>
+    </target>
+
+</project>

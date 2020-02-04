@@ -1,0 +1,34 @@
+<props>
+    <caurl>http://localhost:7054</caurl>
+    <channel>ychannel</channel>
+    <chaincode>mycc</chaincode>
+    <users>
+        <user>
+            <id>admin</id>
+            <affiliation>org1</affiliation>
+            <mspid>Org1MSP</mspid>
+            <pw>adminpw</pw>
+        </user>
+        <user>
+            <id>hfuser</id>
+            <affiliation>org1</affiliation>
+            <mspid>Org1MSP</mspid>
+            <pw/>
+        </user>
+    </users>
+    <peers>
+        <peer>
+            <name>Org1</name>
+            <domain>org1.yawlcc.com</domain>
+            <count>1</count>
+            <url>grpc://localhost:7051</url>
+        </peer>
+    </peers>
+    <orderers>
+        <orderer>
+            <name>orderer</name>
+            <domain>yawlcc.com</domain>
+            <url>grpc://localhost:7050</url>
+        </orderer>
+    </orderers>
+</props>
